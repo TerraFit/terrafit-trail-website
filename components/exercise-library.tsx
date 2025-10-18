@@ -556,12 +556,12 @@ const getCategoryColor = (category: string): string => {
 
 export function ExerciseLibrary() {
   const [selectedCategory, setSelectedCategory] = useState<string>('All Activities');
-  const [displayCount, setDisplayCount] = useState(3);
+  const [displayCount, setDisplayCount] = useState(6);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedExercise, setSelectedExercise] = useState<Exercise | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Filter and sort exercises by station order
+  // Filter and sort exercises by station order (PRESERVE EXACT ORDER 1→15)
   const filteredAndSortedExercises = useMemo(() => {
     let filtered = exercisesData;
 
@@ -569,8 +569,14 @@ export function ExerciseLibrary() {
       filtered = exercisesData.filter(exercise => exercise.category === selectedCategory);
     }
 
-    // Sort by station number (preserves station order)
-    return [...filtered].sort((a, b) => a.station - b.station);
+    // Sort by station number FIRST, then by original order
+    return [...filtered].sort((a, b) => {
+      if (a.station !== b.station) {
+        return a.station - b.station;
+      }
+      // If same station, maintain original order
+      return exercisesData.indexOf(a) - exercisesData.indexOf(b);
+    });
   }, [selectedCategory]);
 
   const displayedExercises = filteredAndSortedExercises.slice(0, displayCount);
@@ -619,7 +625,7 @@ export function ExerciseLibrary() {
           }`}
           onClick={() => {
             setSelectedCategory('All Activities');
-            setDisplayCount(3);
+            setDisplayCount(6);
           }}
         >
           All Activities
@@ -632,7 +638,7 @@ export function ExerciseLibrary() {
           }`}
           onClick={() => {
             setSelectedCategory('Mobility/Agility');
-            setDisplayCount(3);
+            setDisplayCount(6);
           }}
         >
           🟡 Mobility/Agility
@@ -645,7 +651,7 @@ export function ExerciseLibrary() {
           }`}
           onClick={() => {
             setSelectedCategory('Strength');
-            setDisplayCount(3);
+            setDisplayCount(6);
           }}
         >
           🔴 Strength
@@ -658,7 +664,7 @@ export function ExerciseLibrary() {
           }`}
           onClick={() => {
             setSelectedCategory('Endurance');
-            setDisplayCount(3);
+            setDisplayCount(6);
           }}
         >
           🔵 Endurance

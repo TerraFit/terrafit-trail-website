@@ -15,7 +15,6 @@ export function YouTubeModal({ isOpen, onClose, videoId }: YouTubeModalProps) {
   useEffect(() => {
     if (isOpen) {
       setIsPlaying(false);
-      // Prevent body scroll when modal is open
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
@@ -43,8 +42,8 @@ export function YouTubeModal({ isOpen, onClose, videoId }: YouTubeModalProps) {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
       onClick={handleBackdropClick}
     >
-      <div className="relative w-full max-w-2xl mx-auto" style={{ maxHeight: '90vh' }}>
-        {/* Close button - Always visible and on top */}
+      <div className="relative w-full max-w-sm mx-auto" style={{ maxHeight: '90vh' }}>
+        {/* Close button */}
         <button
           onClick={onClose}
           className="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors z-50 p-2"
@@ -64,7 +63,7 @@ export function YouTubeModal({ isOpen, onClose, videoId }: YouTubeModalProps) {
               className="relative w-full h-full group cursor-pointer" 
               onClick={handlePlayClick}
               style={{
-                backgroundImage: `url('https://img.youtube.com/vi/${videoId}/mqdefault.jpg')`,
+                backgroundImage: `url('https://img.youtube.com/vi/N2rLyglNFTg/mqdefault.jpg')`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center'
               }}
@@ -88,7 +87,7 @@ export function YouTubeModal({ isOpen, onClose, videoId }: YouTubeModalProps) {
             // YouTube iframe
             <iframe
               className="w-full h-full"
-              src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+              src={`https://www.youtube.com/embed/N2rLyglNFTg?autoplay=1`}
               title="TerraFit Trail Video"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
