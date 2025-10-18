@@ -37,6 +37,7 @@ export function Navbar() {
                 {link.label}
               </Link>
             ))}
+            <Link href="#register" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"><del>FREE</del></Link>
             <Button asChild>
               <Link href="#contact">Get Started</Link>
             </Button>
@@ -62,6 +63,7 @@ export function Navbar() {
                     {link.label}
                   </Link>
                 ))}
+                <Link href="#register" onClick={() => setOpen(false)} className="text-lg font-medium hover:text-primary transition-colors"><del>FREE</del></Link>
                 <Button asChild className="mt-4">
                   <Link href="#contact" onClick={() => setOpen(false)}>
                     Get Started

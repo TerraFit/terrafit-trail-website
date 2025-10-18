@@ -95,9 +95,10 @@
  ⚠ Cross origin request detected from sweet-pans-clap.lindy.site to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
 Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
  POST /api/qrcode/generate 200 in 322ms
-OST /api/qrcode/generate 200 in 312ms
- GET / 200 in 554ms
- POST /api/qrcode/generate 200 in 315ms
+ ✓ Compiled in 1120ms
+ ✓ Compiled in 610ms
+   skipping / (conflict)
+ode/generate 200 in 315ms
  GET / 200 in 500ms
  GET / 200 in 469ms
  POST /api/qrcode/generate 200 in 293ms
@@ -1225,3 +1226,4 @@ OST /api/qrcode/generate 200 in 312ms
   statusCode: 403
 }
  POST /api/qrcode/generate 200 in 379ms
+   skipping / (conflict)
