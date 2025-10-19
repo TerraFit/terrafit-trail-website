@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { X, Play } from 'lucide-react';
 
 interface YouTubeModalProps {
@@ -9,49 +9,24 @@ interface YouTubeModalProps {
   videoId: string;
 }
 
-export function YouTubeModal({ isOpen, onClose, videoId }: YouTubeModalProps) {
+export default function YouTubeModal({ isOpen, onClose, videoId }: YouTubeModalProps) {
   const [isPlaying, setIsPlaying] = useState(false);
-
-  useEffect(() => {
-    if (isOpen) {
-      setIsPlaying(false);
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [isOpen]);
-
-  if (!isOpen) return null;
 
   const handlePlayClick = () => {
     setIsPlaying(true);
   };
 
-  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleBackdropClick = (e: React.MouseEvent) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
   };
 
+  if (!isOpen) return null;
+
   return (
     <div 
-<div
-  className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
-  onClick={handleBackdropClick}
->
-  <div className="relative w-full max-w-sm mx-auto" style={{ maxHeight: '90vh' }}>
-    {/* Close button */}
-    <button
-      onClick={onClose}
-      className="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors z-50 p-2"
-      aria-label="Close video"
-    >
-      <X className="w-8 h-8" />
-    </button>
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
       onClick={handleBackdropClick}
     >
       <div className="relative w-full max-w-sm mx-auto" style={{ maxHeight: '90vh' }}>
@@ -75,32 +50,29 @@ export function YouTubeModal({ isOpen, onClose, videoId }: YouTubeModalProps) {
               className="relative w-full h-full group cursor-pointer" 
               onClick={handlePlayClick}
               style={{
-                backgroundImage: `url('https://img.youtube.com/vi/N2rLyglNFTg/mqdefault.jpg')`,
+                backgroundImage: `url('https://img.youtube.com/vi/${videoId}/mqdefault.jpg')`,
                 backgroundSize: 'cover',
-                backgroundPosition: 'center'
+                backgroundPosition: 'center',
               }}
             >
-              {/* Dark overlay */}
-              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors" />
-              
-              {/* Play button */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="bg-red-600 rounded-full p-4 group-hover:bg-red-700 transition-colors shadow-lg">
-                  <Play className="w-8 h-8 text-white fill-white" />
+              {/* Play button overlay */}
+              <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors flex items-center justify-center">
+                <div className="bg-red-600 rounded-full p-4 group-hover:scale-110 transition-transform">
+                  <Play className="w-8 h-8 text-white ml-1" />
                 </div>
               </div>
               
-              {/* Text overlay */}
+              {/* Video title overlay */}
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                <p className="text-white font-semibold text-sm">Watch TerraFit Trail Experience</p>
+                <p className="text-white text-sm font-medium">Watch TerraFit Trail Experience</p>
               </div>
             </div>
           ) : (
             // YouTube iframe
             <iframe
+              src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+              title="TerraFit Trail Experience"
               className="w-full h-full"
-              src={`https://www.youtube.com/embed/N2rLyglNFTg?autoplay=1`}
-              title="TerraFit Trail Video"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             />
