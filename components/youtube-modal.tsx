@@ -39,7 +39,19 @@ export function YouTubeModal({ isOpen, onClose, videoId }: YouTubeModalProps) {
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+<div
+  className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+  onClick={handleBackdropClick}
+>
+  <div className="relative w-full max-w-sm mx-auto" style={{ maxHeight: '90vh' }}>
+    {/* Close button */}
+    <button
+      onClick={onClose}
+      className="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors z-50 p-2"
+      aria-label="Close video"
+    >
+      <X className="w-8 h-8" />
+    </button>
       onClick={handleBackdropClick}
     >
       <div className="relative w-full max-w-sm mx-auto" style={{ maxHeight: '90vh' }}>
