@@ -1,128 +1,212 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Pool } from 'pg';
+import { v4 as uuidv4 } from 'uuid';
 import nodemailer from 'nodemailer';
-import twilio from 'twilio';
 
 const pool = new Pool({
-  host: 'localhost',
-  port: 5432,
-  user: process.env.PGUSER,
-  password: process.env.PGPASSWORD,
-  database: 'terrafit_trail',
+  connectionString: process.env.DATABASE_URL,
 });
 
-// Initialize Twilio client for WhatsApp
-const twilioClient = twilio(
-  process.env.TWILIO_ACCOUNT_SID || '',
-  process.env.TWILIO_AUTH_TOKEN || ''
-);
+// WhatsApp notification function
+async function sendWhatsAppNotification(phone: string, message: string) {
+  console.log(`WHATSAPP to ${phone}: ${message}`);
+  return true;
+}
 
-// Initialize email transporter
-const emailTransporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'localhost',
-  port: parseInt(process.env.SMTP_PORT || '587'),
-  secure: process.env.SMTP_SECURE === 'true',
-  auth: process.env.SMTP_USER ? {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASSWORD,
-  } : undefined,
-});
+// Email notification function
+async function sendEmailNotification(email: string, subject: string, html: string) {
+  const transporter = nodemailer.createTransporter({
+    service: 'gmail',
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  });
+
+  await transporter.sendMail({
+    from: process.env.SMTP_USER,
+    to: email,
+    subject: subject,
+    html: html
+  });
+}
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { member_id, location = 'J-Bay Zebra Lodge' } = body;
+    const { 
+      memberId,
+      locationQrCode
+    } = await request.json();
 
-    if (!member_id) {
+    if (!memberId || !locationQrCode) {
       return NextResponse.json(
-        { error: 'Member ID is required' },
+        { error: 'Member ID and Location QR code required' },
         { status: 400 }
       );
     }
 
     const client = await pool.connect();
+    
     try {
-      // Get member details
+      // 1. Verify member exists and get details
       const memberResult = await client.query(
-        'SELECT * FROM members WHERE id = $1',
-        [member_id]
+        `SELECT id, full_name, id_number, phone, emergency_contact, 
+                postal_address, physical_address, date_of_birth
+         FROM members WHERE id = $1`,
+        [memberId]
       );
 
       if (memberResult.rows.length === 0) {
         return NextResponse.json(
-          { error: 'Member not found' },
+          { error: 'Member not found. Please register first.' },
           { status: 404 }
         );
       }
 
       const member = memberResult.rows[0];
 
-      // Record check-in
-      const checkInResult = await client.query(
-        `INSERT INTO check_ins (member_id, location, check_in_time, payment_status)
-         VALUES ($1, $2, CURRENT_TIMESTAMP, 'pending')
-         RETURNING id, check_in_time`,
-        [member_id, location]
+      // 2. Verify location QR code and get location details
+      const locationResult = await client.query(
+        'SELECT id, name, address, operator_email, operator_phone FROM locations WHERE qr_code = $1',
+        [locationQrCode]
       );
 
-      const checkIn = checkInResult.rows[0];
-
-      // Send notifications to J-Bay Zebra Lodge
-      const notificationMessage = `New member check-in: ${member.full_name} at ${location} - ${new Date().toLocaleString()}`;
-
-      // Send email notification
-      try {
-        await emailTransporter.sendMail({
-          from: process.env.SMTP_FROM || 'noreply@terrafit.co.za',
-          to: 'info@jbayzebralodge.co.za',
-          subject: 'TerraFit Trail - New Member Check-in',
-          html: `
-            <h2>New Member Check-in</h2>
-            <p><strong>Member Name:</strong> ${member.full_name}</p>
-            <p><strong>Location:</strong> ${location}</p>
-            <p><strong>Check-in Time:</strong> ${new Date().toLocaleString()}</p>
-            <p><strong>Phone:</strong> ${member.phone_number}</p>
-            <p><strong>Payment Status:</strong> Pending - Please collect payment at front desk</p>
-          `,
-        });
-      } catch (emailError) {
-        console.error('Email notification failed:', emailError);
+      if (locationResult.rows.length === 0) {
+        return NextResponse.json(
+          { error: 'Invalid TerraFit Trail QR code' },
+          { status: 400 }
+        );
       }
 
-      // Send WhatsApp notification
-      try {
-        if (process.env.TWILIO_PHONE_NUMBER && process.env.TWILIO_WHATSAPP_NUMBER) {
-          await twilioClient.messages.create({
-            from: `whatsapp:${process.env.TWILIO_WHATSAPP_NUMBER}`,
-            to: `whatsapp:+27789256812`,
-            body: notificationMessage,
-          });
+      const location = locationResult.rows[0];
+      const checkInTime = new Date().toLocaleString('en-ZA', {
+        timeZone: 'Africa/Johannesburg'
+      });
+
+      // 3. Record the check-in
+      const checkInId = uuidv4();
+      await client.query(
+        'INSERT INTO check_ins (id, member_id, location_id) VALUES ($1, $2, $3)',
+        [checkInId, member.id, location.id]
+      );
+
+      // 4. Send notifications to trail operator
+      const whatsappMessage = `
+🚴‍♂️ TERRAFIT TRAIL CHECK-IN
+
+Member: ${member.full_name}
+ID: ${member.id_number}
+Phone: ${member.phone}
+Emergency: ${member.emergency_contact}
+
+Location: ${location.name}
+Time: ${checkInTime}
+
+Please collect payment at front desk.
+      `.trim();
+
+      await sendWhatsAppNotification(location.operator_phone, whatsappMessage);
+
+      // Email notification
+      const emailHtml = `
+<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+  <h2 style="color: #059669;">🚴‍♂️ TerraFit Trail Check-in Notification</h2>
+  
+  <div style="background: #f8fafc; padding: 20px; border-radius: 8px; margin: 20px 0;">
+    <h3 style="color: #1f2937; margin-bottom: 15px;">Member Details</h3>
+    <p><strong>Full Name:</strong> ${member.full_name}</p>
+    <p><strong>ID Number:</strong> ${member.id_number}</p>
+    <p><strong>Date of Birth:</strong> ${new Date(member.date_of_birth).toLocaleDateString('en-ZA')}</p>
+    <p><strong>Phone:</strong> ${member.phone}</p>
+    <p><strong>Emergency Contact:</strong> ${member.emergency_contact}</p>
+    <p><strong>Postal Address:</strong> ${member.postal_address}</p>
+    <p><strong>Physical Address:</strong> ${member.physical_address}</p>
+  </div>
+
+  <div style="background: #ecfdf5; padding: 15px; border-radius: 8px;">
+    <h3 style="color: #1f2937; margin-bottom: 10px;">Check-in Information</h3>
+    <p><strong>Location:</strong> ${location.name}</p>
+    <p><strong>Address:</strong> ${location.address}</p>
+    <p><strong>Check-in Time:</strong> ${checkInTime}</p>
+  </div>
+
+  <div style="margin-top: 20px; padding: 15px; background: #fef3c7; border-radius: 8px;">
+    <p style="margin: 0;"><strong>Action Required:</strong> Please collect payment at the front desk.</p>
+  </div>
+</div>
+      `;
+
+      await sendEmailNotification(
+        location.operator_email,
+        `TerraFit Check-in: ${member.full_name}`,
+        emailHtml
+      );
+
+      return NextResponse.json({
+        success: true,
+        message: 'Check-in recorded successfully',
+        checkIn: {
+          id: checkInId,
+          memberName: member.full_name,
+          location: location.name,
+          locationAddress: location.address,
+          checkInTime: checkInTime
         }
-      } catch (whatsappError) {
-        console.error('WhatsApp notification failed:', whatsappError);
-      }
+      });
 
-      return NextResponse.json(
-        {
-          success: true,
-          message: 'Check-in successful',
-          checkIn: {
-            id: checkIn.id,
-            member_name: member.full_name,
-            check_in_time: checkIn.check_in_time,
-            location,
-          },
-        },
-        { status: 201 }
-      );
     } finally {
       client.release();
     }
-  } catch (error: any) {
+
+  } catch (error) {
     console.error('Check-in error:', error);
     return NextResponse.json(
-      { error: 'Check-in failed' },
+      { error: 'Internal server error' },
       { status: 500 }
     );
+  }
+}
+
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const qrCode = searchParams.get('qrcode');
+    
+    if (!qrCode) {
+      return NextResponse.json({ error: 'QR code required' }, { status: 400 });
+    }
+
+    const client = await pool.connect();
+    
+    try {
+      const locationResult = await client.query(
+        'SELECT name, address FROM locations WHERE qr_code = $1',
+        [qrCode]
+      );
+
+      if (locationResult.rows.length === 0) {
+        return NextResponse.json({ 
+          valid: false,
+          error: 'Invalid TerraFit Trail QR code' 
+        }, { status: 400 });
+      }
+
+      const location = locationResult.rows[0];
+      
+      return NextResponse.json({
+        valid: true,
+        location: {
+          name: location.name,
+          address: location.address
+        }
+      });
+
+    } finally {
+      client.release();
+    }
+
+  } catch (error) {
+    console.error('QR verification error:', error);
+    return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
