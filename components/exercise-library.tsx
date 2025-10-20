@@ -672,7 +672,6 @@ export function ExerciseLibrary() {
 
       {/* Exercises Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <AnimatePresence mode="popLayout">
           {displayedExercises.map((exercise, index) => {
             const color = getCategoryColor(exercise.category);
 
@@ -743,7 +742,6 @@ export function ExerciseLibrary() {
               </motion.div>
             );
           })}
-        </AnimatePresence>
       </div>
 
       {/* View More Button */}
