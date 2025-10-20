@@ -3,44 +3,70 @@ import QRCode from 'qrcode';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { location = 'J-Bay Zebra Lodge', memberId } = body;
+    const { data, type = 'location' } = await request.json();
 
-    // Create QR code data - this will link to the check-in page
-    const qrData = {
-      location,
-      memberId,
-      timestamp: new Date().toISOString(),
-    };
+    if (!data) {
+      return NextResponse.json({ error: 'Data required for QR code generation' }, { status: 400 });
+    }
 
-    const qrString = JSON.stringify(qrData);
+    let qrData = '';
+    
+    if (type === 'location') {
+      // Generate QR code for TerraFit Trail location
+      qrData = `https://terrafit-trail.com/checkin?location=${encodeURIComponent(data)}`;
+    } else if (type === 'member') {
+      // Generate QR code for member (if needed in future)
+      qrData = `terrafit://member/${data}`;
+    }
 
-    // Generate QR code as data URL
-    const qrCodeDataUrl = await QRCode.toDataURL(qrString, {
-      errorCorrectionLevel: 'H',
-      type: 'image/png',
-      quality: 0.95,
-      margin: 1,
-      width: 300,
-      color: {
-        dark: '#000000',
-        light: '#FFFFFF',
-      },
-    });
-
-    return NextResponse.json(
-      {
+    try {
+      const qrCodeDataURL = await QRCode.toDataURL(qrData);
+      
+      return NextResponse.json({
         success: true,
-        qrCode: qrCodeDataUrl,
+        qrCode: qrCodeDataURL,
         data: qrData,
-      },
-      { status: 200 }
-    );
-  } catch (error: any) {
-    console.error('QR code generation error:', error);
-    return NextResponse.json(
-      { error: 'QR code generation failed' },
-      { status: 500 }
-    );
+        type: type
+      });
+
+    } catch (qrError) {
+      console.error('QR code generation error:', qrError);
+      return NextResponse.json({ error: 'Failed to generate QR code' }, { status: 500 });
+    }
+
+  } catch (error) {
+    console.error('QR code API error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
+
+export async function GET(request: NextRequest) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const data = searchParams.get('data');
+    const type = searchParams.get('type') || 'location';
+
+    if (!data) {
+      return NextResponse.json({ error: 'Data parameter required' }, { status: 400 });
+    }
+
+    let qrData = '';
+    
+    if (type === 'location') {
+      qrData = `https://terrafit-trail.com/checkin?location=${encodeURIComponent(data)}`;
+    }
+
+    const qrCodeDataURL = await QRCode.toDataURL(qrData);
+    
+    return NextResponse.json({
+      success: true,
+      qrCode: qrCodeDataURL,
+      data: qrData
+    });
+
+  } catch (error) {
+    console.error('QR code generation error:', error);
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
+  }
+}
+
