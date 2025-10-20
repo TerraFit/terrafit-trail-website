@@ -80,7 +80,6 @@ function ExerciseCard({ exercise, category, onCardClick }: ExerciseCardProps) {
                     <span>{instruction}</span>
                   </li>
                 )))}
-            )}
           </ul>
 
           {/* Expand/Collapse Button */}
