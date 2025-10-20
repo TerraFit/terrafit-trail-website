@@ -63,25 +63,13 @@ function ExerciseCard({ exercise, category, onCardClick }: ExerciseCardProps) {
         <div className="text-sm space-y-2 flex-1 flex flex-col">
           <p className="font-medium text-foreground">Instructions:</p>
           <ul className="text-xs text-muted-foreground space-y-1 flex-1">
-            {isExpanded ? (
-              // Show all instructions when expanded
-              exercise.instructions.map((instruction: string, idx: number) => (
-                <li key={idx} className="flex gap-2">
-                  <span className="text-primary font-bold">•</span>
-                  <span>{instruction}</span>
-                </li>
-              ))
-            ) : (
-              // Show first 3 instructions when collapsed
-              <>
-                {exercise.instructions.slice(0, 3).map((instruction: string, idx: number) => (
-                  <li key={idx} className="flex gap-2">
-                    <span className="text-primary font-bold">•</span>
-                    <span>{instruction}</span>
-                  </li>
-                )))}
-          </ul>
-
+  {exercise.instructions.slice(0, isExpanded ? exercise.instructions.length : 3).map((instruction: string, idx: number) => (
+    <li key={idx} className="flex gap-2">
+      <span className="text-primary font-bold">•</span>
+      <span>{instruction}</span>
+    </li>
+  ))}
+</ul>
           {/* Expand/Collapse Button */}
           {exercise.instructions.length > 3 && (
             <button
