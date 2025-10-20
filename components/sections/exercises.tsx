@@ -418,8 +418,6 @@ export function Exercises() {
               </CardContent>
             </Card>
           </div>
-  );
-}
       {/* Exercise Modal */}
       <ExerciseModal
         exercise={selectedExercise}
