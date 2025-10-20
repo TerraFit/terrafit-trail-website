@@ -57,8 +57,6 @@ function ExerciseCard({ exercise, category, onCardClick }: ExerciseCardProps) {
           <div className="absolute inset-0 flex items-center justify-center bg-muted/50">
             <span className="text-xs">Exercise Image</span>
           </div>
-        </div>
-        
         {/* Instructions with Expand/Collapse */}
         <div className="text-sm space-y-2 flex-1 flex flex-col">
           <p className="font-medium text-foreground">Instructions:</p>
