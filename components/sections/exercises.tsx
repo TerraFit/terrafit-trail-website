@@ -126,7 +126,6 @@ function ExerciseModal({
         <>
           {/* Backdrop */}
           <div
-            animate={{ opacity: 1 }}
             onClick={onClose}
             className="fixed inset-0 bg-black bg-opacity-50 z-40"
           />
