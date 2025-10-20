@@ -418,7 +418,13 @@ export function Exercises() {
           </div>
         </div>
       </div>
-
+</div>  {/* ← CLOSES THE bg-white div from line 122 */}
+          </div>  {/* ← CLOSES THE fixed inset-0 div from line 119 */}
+        </>  {/* ← CLOSES NESTED FRAGMENT */}
+      )}
+    </>  {/* ← CLOSES MAIN FRAGMENT */}
+  );
+}
       {/* Exercise Modal */}
       <ExerciseModal
         exercise={selectedExercise}
@@ -430,5 +436,5 @@ export function Exercises() {
         hasNext={hasNext}
       />
     </section>
-  );
+    );
 }
