@@ -62,7 +62,7 @@ function ExerciseCard({ exercise, category, onCardClick }: ExerciseCardProps) {
         {/* Instructions with Expand/Collapse */}
         <div className="text-sm space-y-2 flex-1 flex flex-col">
           <p className="font-medium text-foreground">Instructions:</p>
-          <ul className="text-xs text-muted-foreground space-y-1 flex-1">
+         <ul className="text-xs text-muted-foreground space-y-1 flex-1">
   {exercise.instructions.slice(0, isExpanded ? exercise.instructions.length : 3).map((instruction: string, idx: number) => (
     <li key={idx} className="flex gap-2">
       <span className="text-primary font-bold">•</span>
