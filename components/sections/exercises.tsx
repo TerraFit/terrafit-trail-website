@@ -346,7 +346,6 @@ export function Exercises() {
                       />
                     </div>
                   ))}
-                </>
               </div>
 
               {/* View More Button */}
