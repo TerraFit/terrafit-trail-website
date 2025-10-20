@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { Loader2 } from 'lucide-react';
 import { ExerciseModal } from './exercise-modal';
