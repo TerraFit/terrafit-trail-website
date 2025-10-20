@@ -79,7 +79,7 @@ function ExerciseCard({ exercise, category, onCardClick }: ExerciseCardProps) {
                     <span className="text-primary font-bold">•</span>
                     <span>{instruction}</span>
                   </li>
-                ))}
+                )))}
             )}
           </ul>
 
