@@ -213,7 +213,9 @@ function ExerciseModal({
               </div>
             </div>
           </div>
+          </>
       )}
+      </> 
   );
 }
 
