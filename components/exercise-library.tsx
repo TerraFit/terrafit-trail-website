@@ -735,7 +735,7 @@ export function ExerciseLibrary() {
                     Click to view details →
                   </p>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
       </div>
