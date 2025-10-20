@@ -676,7 +676,7 @@ export function ExerciseLibrary() {
             const color = getCategoryColor(exercise.category);
 
             return (
-              <motion.div>
+              <div
                 key={`${exercise.station}-${exercise.name}`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
