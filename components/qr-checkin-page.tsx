@@ -20,8 +20,8 @@ export function QRCheckInPage() {
 
   useEffect(() => {
     // Parse QR code data from URL params
-    const memberId = searchParams.get('member_id');
-    const location = searchParams.get('location') || 'J-Bay Zebra Lodge';
+    const memberId = searchParams?.get('member_id') || null;
+  const location = searchParams?.get('location') || 'J-Bay Zebra Lodge';
 
     if (memberId) {
       setCheckInData({
