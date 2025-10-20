@@ -80,7 +80,6 @@ function ExerciseCard({ exercise, category, onCardClick }: ExerciseCardProps) {
                     <span>{instruction}</span>
                   </li>
                 ))}
-              </>
             )}
           </ul>
 
@@ -228,9 +227,7 @@ function ExerciseModal({
               </div>
             </div>
           </div>
-        </>
       )}
-    </>
   );
 }
 
@@ -392,7 +389,6 @@ export function Exercises() {
                           />
                         </div>
                       ))}
-                    </>
                   </div>
 
                   {/* View More Button for Category */}
