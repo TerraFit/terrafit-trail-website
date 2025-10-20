@@ -418,7 +418,6 @@ export function Exercises() {
               </CardContent>
             </Card>
           </div>
-    </>  {/* ← CLOSES MAIN FRAGMENT */}
   );
 }
       {/* Exercise Modal */}
