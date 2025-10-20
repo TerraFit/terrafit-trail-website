@@ -172,10 +172,10 @@ SidebarMenuItem.displayName = "SidebarMenuItem"
 
 const SidebarMenuButton = React.forwardRef<HTMLButtonElement, React.ComponentProps<"button"> & { asChild?: boolean }>(
   ({ className, asChild = false, ...props }, ref) => {
-   const SidebarMenuButton = React.forwardRef<HTMLButtonElement, React.ComponentProps<"button">>(
-  ({ className, ...props }, ref) => {
+    const Comp = asChild ? Slot : "button"
+    
     return (
-      <button
+      <Comp
         ref={ref}
         className={cn(
           "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-all hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none",
@@ -186,6 +186,8 @@ const SidebarMenuButton = React.forwardRef<HTMLButtonElement, React.ComponentPro
     )
   }
 )
+SidebarMenuButton.displayName = "SidebarMenuButton"
+
 export {
   Sidebar,
   SidebarHeader,
