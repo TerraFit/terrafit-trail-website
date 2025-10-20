@@ -431,6 +431,8 @@ export function Exercises() {
         hasPrevious={hasPrevious}
         hasNext={hasNext}
       />
+      </div>  {/* ← closes max-w-6xl div */}
+    </div>  {/* ← closes container div */}
     </section>
-    );
+  );
 }
