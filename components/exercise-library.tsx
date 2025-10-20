@@ -767,9 +767,9 @@ export function ExerciseLibrary() {
         exercise={selectedExercise}
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onPrevious={handlePrevious}
+        onPrev={handlePrevious}
         onNext={handleNext}
-        hasPrevious={hasPrevious}
+        hasPrev={hasPrevious}
         hasNext={hasNext}
       />
     </div>
