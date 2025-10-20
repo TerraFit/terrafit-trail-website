@@ -7,7 +7,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { exercisesData } from "@/lib/exercises-data";
 import Image from "next/image";
 import { ChevronDown, ChevronLeft, ChevronRight, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
 
 const categoryColorMap = {
   mobility: { label: "Mobility/Agility", description: "Improve flexibility and movement", color: "bg-yellow-500", stationColor: "bg-yellow-400" },
@@ -122,23 +121,19 @@ function ExerciseModal({
   const stationColor = categoryInfo?.stationColor || "bg-gray-400";
 
   return (
-    <AnimatePresence>
+    <>
       {isOpen && (
         <>
           {/* Backdrop */}
-          <motion.div
-            initial={{ opacity: 0 }}
+          <div
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
             onClick={onClose}
             className="fixed inset-0 bg-black bg-opacity-50 z-40"
           />
 
           {/* Modal */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          <div
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 20 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
           >
             <div className="bg-white rounded-lg shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -234,10 +229,10 @@ function ExerciseModal({
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
         </>
       )}
-    </AnimatePresence>
+    </>
   );
 }
 
@@ -342,23 +337,20 @@ export function Exercises() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <AnimatePresence mode="popLayout">
+                < mode="popLayout">
                   {displayedExercises.map((exercise, idx) => (
-                    <motion.div
+                    <div
                       key={exercise.id}
-                      initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ delay: idx * 0.05 }}
                     >
                       <ExerciseCard 
                         exercise={exercise} 
                         category={exercise.category}
                         onCardClick={handleExerciseClick}
                       />
-                    </motion.div>
+                    </div>
                   ))}
-                </AnimatePresence>
+                </>
               </div>
 
               {/* View More Button */}
@@ -394,23 +386,20 @@ export function Exercises() {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <AnimatePresence mode="popLayout">
+                    < mode="popLayout">
                       {displayedCategoryExercises.map((exercise, idx) => (
-                        <motion.div
+                        <div
                           key={exercise.id}
-                          initial={{ opacity: 0, y: 20 }}
                           animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -20 }}
-                          transition={{ delay: idx * 0.05 }}
                         >
                           <ExerciseCard 
                             exercise={exercise} 
                             category={categoryKey}
                             onCardClick={handleExerciseClick}
                           />
-                        </motion.div>
+                        </div>
                       ))}
-                    </AnimatePresence>
+                    </>
                   </div>
 
                   {/* View More Button for Category */}
