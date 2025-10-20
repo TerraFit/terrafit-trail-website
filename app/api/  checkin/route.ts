@@ -15,7 +15,7 @@ async function sendWhatsAppNotification(phone: string, message: string) {
 
 // Email notification
 async function sendEmailNotification(email: string, subject: string, html: string) {
-  const transporter = nodemailer.createTransporter({
+  const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
       user: process.env.SMTP_USER,
