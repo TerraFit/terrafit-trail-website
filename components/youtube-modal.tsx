@@ -1,83 +1,55 @@
 'use client';
-
 import { useState } from 'react';
 
-interface YouTubeModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  videoId: string;
-}
-
-export default function YouTubeModal({ isOpen, onClose, videoId }: YouTubeModalProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  const handlePlayClick = () => {
-    setIsPlaying(true);
-  };
-
-  const handleBackdropClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
-      onClose();
-    }
-  };
-
-  if (!isOpen) return null;
+export default function YouTubeModal() {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div 
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
-      onClick={handleBackdropClick}
-    >
-      <div className="relative w-full max-w-sm mx-auto" style={{ maxHeight: '90vh' }}>
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors z-50 p-2"
-          aria-label="Close video"
-        >
-          ✕
-        </button>
-
-        {/* Video container with 9:16 aspect ratio (vertical) */}
-        <div 
-          className="relative w-full bg-black rounded-lg overflow-hidden shadow-2xl"
-          style={{ aspectRatio: '9/16', maxHeight: '90vh' }}
-        >
-          {!isPlaying ? (
-            // Thumbnail preview
-            <div 
-              className="relative w-full h-full group cursor-pointer" 
-              onClick={handlePlayClick}
-              style={{
-                backgroundImage: `url('https://img.youtube.com/vi/${videoId}/mqdefault.jpg')`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-              }}
-            >
-              {/* Play button overlay */}
-              <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors flex items-center justify-center">
-                <div className="bg-red-600 rounded-full p-4 group-hover:scale-110 transition-transform">
-                  <span className="text-white text-lg">▶</span>
-                </div>
+    <>
+      {/* Thumbnail Preview */}
+      <div 
+        className="max-w-md mx-auto cursor-pointer transform hover:scale-105 transition duration-300"
+        onClick={() => setIsOpen(true)}
+      >
+        <div className="bg-black rounded-lg overflow-hidden shadow-2xl border-4 border-white">
+          <div className="aspect-[9/16] relative bg-gradient-to-br from-green-600 to-orange-500 flex items-center justify-center">
+            <div className="text-center text-white p-6">
+              <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
               </div>
-              
-              {/* Video title overlay */}
-              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-                <p className="text-white text-sm font-medium">Watch TerraFit Trail Experience</p>
-              </div>
+              <h3 className="text-xl font-bold mb-2">Watch the TerraFit Experience</h3>
+              <p className="text-sm opacity-90">See our fitness trail in action</p>
             </div>
-          ) : (
-            // YouTube iframe
-            <iframe
-              src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
-              title="TerraFit Trail Experience"
-              className="w-full h-full"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          )}
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Modal */}
+      {isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50 p-4">
+          <div className="relative max-w-md w-full">
+            <button 
+              onClick={() => setIsOpen(false)}
+              className="absolute -top-12 right-0 text-white text-2xl hover:text-orange-400"
+            >
+              ✕
+            </button>
+            <div className="aspect-[9/16] bg-black rounded-lg overflow-hidden">
+              <iframe
+                width="100%"
+                height="100%"
+                src="https://www.youtube.com/embed/YOUR_VIDEO_ID?autoplay=1"
+                title="TerraFit Trail Experience"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="border-0"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }
