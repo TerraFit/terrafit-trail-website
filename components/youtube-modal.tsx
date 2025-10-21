@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { X, Play } from 'lucide-react';
-
+<button onClick={onClose}>✕</button>
+<button onClick={handlePlayClick}>▶</button>
 interface YouTubeModalProps {
   isOpen: boolean;
   onClose: () => void;
