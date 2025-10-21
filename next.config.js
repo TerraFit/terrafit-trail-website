@@ -1,4 +1,8 @@
+/** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    appDir: true,  // ← ADD THIS LINE
+  },
   webpack: (config, options) => {
     config.module.rules.push({
       test: /\.svg$/,
