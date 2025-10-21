@@ -1,8 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-<button onClick={onClose}>✕</button>
-<button onClick={handlePlayClick}>▶</button>
+
 interface YouTubeModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -36,7 +35,7 @@ export default function YouTubeModal({ isOpen, onClose, videoId }: YouTubeModalP
           className="absolute -top-12 right-0 text-white hover:text-gray-300 transition-colors z-50 p-2"
           aria-label="Close video"
         >
-          <X className="w-8 h-8" />
+          ✕
         </button>
 
         {/* Video container with 9:16 aspect ratio (vertical) */}
@@ -58,7 +57,7 @@ export default function YouTubeModal({ isOpen, onClose, videoId }: YouTubeModalP
               {/* Play button overlay */}
               <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors flex items-center justify-center">
                 <div className="bg-red-600 rounded-full p-4 group-hover:scale-110 transition-transform">
-                  <Play className="w-8 h-8 text-white ml-1" />
+                  <span className="text-white text-lg">▶</span>
                 </div>
               </div>
               
