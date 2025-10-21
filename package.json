@@ -7,6 +7,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@radix-ui/react-toggle-group": "^1.0.3",
     "next": "14.0.0",
     "next-themes": "^0.2.1",
     "sonner": "^1.0.0",
