@@ -1,6 +1,4 @@
 import Link from 'next/link';
-import YouTubeModal from '@/components/YouTubeModal';
-import ExercisePreview from '@/components/ExercisePreview';
 
 export default function Home() {
   return (
@@ -32,9 +30,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* YouTube Modal Component */}
-          <YouTubeModal />
-
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center mt-12">
             <Link 
@@ -53,25 +48,26 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Exercise Preview */}
-      <ExercisePreview />
-
-      {/* Why Choose TerraFit */}
-      <section className="py-16 px-4 max-w-6xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold text-center text-green-800 mb-12">
-          Why Choose TerraFit Trail
-        </h2>
-        <div className="grid md:grid-cols-3 gap-8">
-          {[
-            { title: 'Professional Grade', desc: 'Commercial-quality equipment built to last' },
-            { title: 'Complete System', desc: '15 stations, 43 exercises for full-body fitness' },
-            { title: 'Natural Integration', desc: 'Beautifully blends with outdoor environments' }
-          ].map((item, index) => (
-            <div key={index} className="text-center p-6 bg-white rounded-lg shadow-md border border-green-100">
-              <h3 className="text-xl font-bold text-green-700 mb-3">{item.title}</h3>
-              <p className="text-gray-600">{item.desc}</p>
+      {/* Simple Exercise Preview - No broken imports */}
+      <section className="py-16 px-4 bg-white">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-green-800 mb-8">
+            Professional Fitness Trail System
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="p-6 bg-green-50 rounded-lg border border-green-200">
+              <h3 className="text-xl font-bold text-green-700 mb-3">15 Stations</h3>
+              <p className="text-gray-600">Complete outdoor fitness circuit</p>
             </div>
-          ))}
+            <div className="p-6 bg-green-50 rounded-lg border border-green-200">
+              <h3 className="text-xl font-bold text-green-700 mb-3">43 Exercises</h3>
+              <p className="text-gray-600">Full-body workout variety</p>
+            </div>
+            <div className="p-6 bg-green-50 rounded-lg border border-green-200">
+              <h3 className="text-xl font-bold text-green-700 mb-3">3 Categories</h3>
+              <p className="text-gray-600">Strength, Mobility, Endurance</p>
+            </div>
+          </div>
         </div>
       </section>
     </div>
